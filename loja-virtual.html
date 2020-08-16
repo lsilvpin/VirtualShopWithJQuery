@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loja Virtual</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    // -------------------------------------------------------
+    // NO CONFLICT
+    $.noConflict()
+    // -------------------------------------------------------
+    // Declaração das variáveis
+    // Variáveis de Layout
+    var menuVaiLevar;
+    var menuProdutos;
+    var menuLevarMais;
+    var menuDistancia;
+    // Variáveis de dados
+    var nome = [];
+    var quantia = [];
+    var preco = [];
+    var distancia;
+    // Variáveis de resultados
+    var totalBruto;
+    var quantiaTotal;
+    var multiplicadorDesconto;
+    var totalAposDesconto;
+    var frete;
+    var totalAposFrete;
+    // -------------------------------------------------------
+    // Início do processamento
+    jQuery(document).ready(function () {
+      // Configurações gerais
+      var body = jQuery("body");
+      body.css("fontSize", "16px");
+      body.css("textAlign", "center");
+      // Criar interfaces
+      // -------------------------------------------------------
+      // Tela inicial com menu inicial
+      body.append("<!-- Tela inicial -->");
+      body.append(document.createElement("h1"));
+      jQuery("h1").hide();
+      jQuery("h1").text("Seja bem vindo a loja!");
+      body.append(document.createElement("form"));
+      jQuery("form").hide();
+      jQuery("form").append(document.createElement("label"));
+      jQuery("label").text("Vai levar algo? ");
+      jQuery("form").append("</br>");
+      jQuery("form").append(document.createElement("button"));
+      jQuery("form").append(document.createElement("button"));
+      jQuery("button").eq(0).text("Sim");
+      jQuery("button").eq(1).text("Não");
+      // -------------------------------------------------------
+      // Menu de produtos
+      body.append(document.createElement("form"));
+      jQuery("form").eq(1).hide();
+      for (var i = 0; i < 3; i++) {
+        jQuery("form").eq(1).append(document.createElement("label"));
+        jQuery("form").eq(1).append(document.createElement("input"));
+        jQuery("form").eq(1).append("</br>");
+      }
+      jQuery("label").eq(1).text("Insira o nome do produto: ");
+      jQuery("label").eq(2).text("Insira a quantidade do produto: ");
+      jQuery("label").eq(3).text("Insira o preço deste produto: ");
+      jQuery("form").eq(1).append(document.createElement("button"));
+      jQuery("button").eq(2).text("Enviar");
+      // -------------------------------------------------------
+      // Menu: Vai levar algo mais?
+      body.append(document.createElement("form"));
+      jQuery("form").eq(2).hide();
+      jQuery("form").eq(2).append(document.createElement("label"));
+      jQuery("label").eq(4).text("Vai levar algo mais? ");
+      jQuery("form").append("</br>");
+      jQuery("form").eq(2).append(document.createElement("button"));
+      jQuery("form").eq(2).append(document.createElement("button"));
+      jQuery("button").eq(3).text("Sim");
+      jQuery("button").eq(4).text("Não");
+      // -------------------------------------------------------
+      // Menu: A que distância você mora?
+      body.append(document.createElement("form"));
+      jQuery("form").eq(3).hide();
+      jQuery("form").eq(3).append(document.createElement("label"));
+      jQuery("form").eq(3).append("</br>");
+      jQuery("label").eq(5).text("A que distância da loja você mora? (em Kilômetros)");
+      jQuery("form").eq(3).append(document.createElement("input"));
+      jQuery("form").eq(3).append("</br>");
+      jQuery("form").eq(3).append(document.createElement("button"));
+      jQuery("button").eq(5).text("Calcular totais");
+      // -------------------------------------------------------
+      // Menu despedida
+      body.append(document.createElement("p"));
+      jQuery("p").hide();
+      jQuery("p").text("OK! Volte quando quiser!");
+      // -------------------------------------------------------
+      // Menu "Calculando Totais"
+      body.append(document.createElement("div"));
+      jQuery("div").append(document.createElement("p"));
+      jQuery("div").hide();
+      jQuery("p").eq(1).text("Calculando totais ...");
+      jQuery("div").append(document.createElement("button"));
+      jQuery("button").eq(6).hide();
+      jQuery("button").eq(6).text("Mostrar resultados finais");
+      // -------------------------------------------------------
+      // Menu dos resultados finais
+      body.append(document.createElement("div"));
+      jQuery("div").eq(1).hide();
+      jQuery("div").eq(1).append(document.createElement("h2"));
+      jQuery("h2").text("Resultados finais");
+      jQuery("div").eq(1).append(document.createElement("ul"));
+      jQuery("ul").append(document.createElement("h3"));
+      jQuery("h3").text("Você está levando");
+      jQuery("div").eq(1).append(document.createElement("ul"));
+      jQuery("ul").eq(1).append(document.createElement("h3"));
+      jQuery("h3").eq(1).text("Totais");
+      for (var i = 0; i < 5; i++) {
+        jQuery("ul").eq(1).append(document.createElement("li"));
+      }
+      // -------------------------------------------------------
+      // Setando Id's para as interfaces
+      jQuery("form").eq(0).attr("id", "menuVaiLevar");
+      jQuery("form").eq(1).attr("id", "menuProdutos");
+      jQuery("form").eq(2).attr("id", "menuLevarMais");
+      jQuery("form").eq(3).attr("id", "menuDistancia");
+      jQuery("p").eq(0).attr("id", "despedida");
+      jQuery("div").eq(0).attr("id", "calculandoTotais");
+      jQuery("div").eq(1).attr("id", "resultadosFinais");
+      // Lançando Jquery form objects em variáveis
+      menuVaiLevar = jQuery("form").eq(0);
+      menuProdutos = jQuery("form").eq(1);
+      menuLevarMais = jQuery("form").eq(2);
+      menuDistancia = jQuery("form").eq(3);
+      calculandoTotais = jQuery("div").eq(0);
+      resultadosFinais = jQuery("div").eq(1);
+      // -------------------------------------------------------
+      // -------------------------------------------------------
+      // Programa
+      // Lançar menu inicial
+      jQuery("h1").fadeIn(500, function () {
+        menuVaiLevar.fadeIn(500);
+      });
+      // -------------------------------------------------------
+      // Resposta ao primeiro SIM
+      jQuery("button").eq(0).click(function (e) {
+        e.preventDefault(); // Garante o funcionamento
+        // Apaga o menu anterior
+        menuVaiLevar.fadeOut(500, function () {
+          // Ascende o próximo menu
+          menuProdutos.fadeIn(500);
+        });
+      });
+      // -------------------------------------------------------
+      // Resposta ao primeiro NÃO
+      jQuery("button").eq(1).click(function (e) {
+        e.preventDefault();
+        // Apaga o menu anterior
+        menuVaiLevar.fadeOut(500, function () {
+          // Ascende a despedida
+          jQuery("p").fadeIn(500);
+        });
+      });
+      // -------------------------------------------------------
+      // Resposta ao ENVIAR
+      jQuery("button").eq(2).click(function (e) {
+        e.preventDefault();
+        // Coleta os dados inseridos
+        nome.push(jQuery("input").eq(0).val());
+        quantia.push(Number(jQuery("input").eq(1).val()));
+        preco.push(Number(jQuery("input").eq(2).val()));
+        // Apaga o menu anterior
+        menuProdutos.fadeOut(500, function () {
+          // Ascende o menu posterior
+          menuLevarMais.fadeIn(500);
+        });
+      });
+      // -------------------------------------------------------
+      // Resposta ao segundo SIM
+      jQuery("button").eq(3).click(function (e) {
+        e.preventDefault();
+        // Limpar campos de entrada
+        jQuery("input").eq(0).val(null);
+        jQuery("input").eq(1).val(null);
+        jQuery("input").eq(2).val(null);
+        // Apagar menu anterior
+        menuLevarMais.fadeOut(500, function () {
+          // Ascender menu posterior
+          menuProdutos.fadeIn(500);
+        });
+      });
+      // -------------------------------------------------------
+      // Resposta ao segundo NÃO
+      jQuery("button").eq(4).click(function (e) {
+        e.preventDefault();
+        // Apagar menu anterior
+        menuLevarMais.fadeOut(500, function () {
+          // Ascender menu Distância
+          menuDistancia.fadeIn(500);
+        });
+      })
+      // -------------------------------------------------------
+      // Mostrar tela "Calculando Totais"
+      jQuery("button").eq(5).click(function (e) {
+        e.preventDefault();
+        // Apagar menu anterior
+        menuDistancia.fadeOut(500, function () {
+          // Ascender menu "Calculando totais"
+          for (var i = 0; i < 7; i++) {
+            if (i == 6) {
+              calculandoTotais.fadeIn(500, function () {
+                jQuery("button").eq(6).fadeIn(500);
+              });
+            } else {
+              calculandoTotais.fadeToggle(500);
+            }
+          }
+        });
+      });
+      // -------------------------------------------------------
+      // Apresentar resultados finais
+      jQuery("button").eq(6).click(function (e) {
+        e.preventDefault();
+        // Apagar menu anterior
+        calculandoTotais.fadeOut(500, function () {
+          // -------------------------------------------------------
+          // Fazer todos os cálculos
+          // Quantidade total e total bruto
+          quantiaTotal = 0;
+          totalBruto = 0;
+          for (var i = 0; i < nome.length; i++) {
+            quantiaTotal += quantia[i];
+            totalBruto += quantia[i] * preco[i];
+          }
+          // Cálculo do desconto
+          if (quantiaTotal >= 10) {
+            multiplicadorDesconto = 0.9;
+          } else {
+            multiplicadorDesconto = 1;
+          }
+          // Valor após desconto
+          totalAposDesconto = totalBruto * multiplicadorDesconto;
+          // Cálculo do frete
+          if (distancia <= 1) {
+            frete = 0;
+          } else if (distancia <= 30) {
+            frete = 10;
+          } else if (distancia <= 75) {
+            frete = 15;
+          } else if (distancia <= 500) {
+            frete = 0.2 * distancia;
+          } else {
+            frete = 0;
+          }
+          // Total após frete
+          totalAposFrete = totalAposDesconto - frete;
+          // Preparar resultados finais
+          for (var i = 0; i < nome.length; i++) {
+            jQuery("ul").eq(0).append(document.createElement("li"));
+            jQuery("ul").eq(0).children().filter("li").eq(i).text(`${quantia[i]} ${nome[i]}(s)`);
+          }
+          //Dando um estilo simples às listas
+          jQuery("li").css("listStyle", "none");
+          // Inseriando resultados finais na lista
+          jQuery("ul").eq(1).children().filter("li").eq(0).text(`Total bruto = R$ ${totalBruto.toFixed(2)}`);
+          jQuery("ul").eq(1).children().filter("li").eq(1).text(`Desconto = ${((1 - multiplicadorDesconto) * 100).toFixed(0)}`);
+          jQuery("ul").eq(1).children().filter("li").eq(2).text(`Total após desconto = R$ ${totalAposDesconto.toFixed(2)}`);
+          jQuery("ul").eq(1).children().filter("li").eq(3).text(`Frete = R$ ${frete.toFixed(2)}`);
+          jQuery("ul").eq(1).children().filter("li").eq(4).text(`Total com frete = R$ ${totalAposFrete.toFixed(2)}`);
+          // Ascender menu final
+          resultadosFinais.fadeIn(500);
+        });
+      });
+    });
+  </script>
+</head>
+
+<body>
+</body>
+
+</html>
